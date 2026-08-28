@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Operating Dashboard — CodeReview AI</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm 10mm 12mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #1e293b;
+    background-color: #ffffff;
+    font-size: 8.5pt;
+    line-height: 1.35;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .page-break {
+    page-break-before: always;
+    margin-top: 15px;
+  }
+
+  /* Header Section */
+  .header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 60%, #312e81 100%);
+    color: #ffffff;
+    padding: 13px 18px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+  }
+
+  .header-left {
+    flex: 1;
+  }
+
+  .badge-tag {
+    display: inline-block;
+    background: rgba(99, 102, 241, 0.3);
+    color: #a5b4fc;
+    border: 1px solid rgba(165, 180, 252, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .header-title {
+    font-size: 15pt;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    color: #ffffff;
+    margin-bottom: 2px;
+  }
+
+  .header-subtitle {
+    font-size: 8pt;
+    color: #cbd5e1;
+    font-weight: 500;
+  }
+
+  .header-meta {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 7.5pt;
+    text-align: right;
+    line-height: 1.45;
+  }
+
+  .header-meta strong {
+    color: #38bdf8;
+  }
+
+  /* Executive KPI Cards Bar */
+  .kpi-bar {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .kpi-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 8px;
+    text-align: center;
+    border-top: 3px solid #3b82f6;
+  }
+
+  .kpi-card.green { border-top-color: #10b981; }
+  .kpi-card.amber { border-top-color: #f59e0b; }
+  .kpi-card.indigo { border-top-color: #6366f1; }
+  .kpi-card.purple { border-top-color: #8b5cf6; }
+
+  .kpi-label {
+    font-size: 6.5pt;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 2px;
+  }
+
+  .kpi-val {
+    font-size: 11pt;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .kpi-sub {
+    font-size: 6.5pt;
+    color: #059669;
+    font-weight: 600;
+  }
+
+  /* Grid 2 Columns for Diagnosis & North Star */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 9px 11px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 8.5pt;
+    font-weight: 700;
+    color: #1e293b;
+    border-bottom: 1.5px solid #f1f5f9;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background: #e0e7ff;
+    color: #4338ca;
+    border-radius: 4px;
+    font-size: 7.5pt;
+  }
+
+  .card-content {
+    font-size: 7.8pt;
+    color: #334155;
+    line-height: 1.4;
+  }
+
+  .highlight-box {
+    background: #eff6ff;
+    border-left: 3px solid #3b82f6;
+    padding: 5px 8px;
+    border-radius: 0 4px 4px 0;
+    margin-top: 4px;
+    font-size: 7.5pt;
+    color: #1e40af;
+  }
+
+  /* Section Title */
+  .section-title {
+    font-size: 9.5pt;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    padding-bottom: 3px;
+    border-bottom: 2px solid #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .section-tag {
+    font-size: 7pt;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: none;
+  }
+
+  /* Table Style */
+  table.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.2pt;
+    margin-bottom: 10px;
+    background: #ffffff;
+  }
+
+  table.dashboard-table th {
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+    text-align: left;
+    padding: 5px 5px;
+    border: 1px solid #cbd5e1;
+    font-size: 6.8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  table.dashboard-table td {
+    padding: 4.5px 5px;
+    border: 1px solid #e2e8f0;
+    vertical-align: middle;
+    line-height: 1.25;
+  }
+
+  table.dashboard-table tr:nth-child(even) {
+    background-color: #f8fafc;
+  }
+
+  .cell-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: center;
+    background: #f1f5f9;
+    font-size: 7pt;
+  }
+
+  .badge-id {
+    display: inline-block;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 6.5pt;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .badge-leading { background: #dbeafe; color: #1e40af; }
+  .badge-operating { background: #e0e7ff; color: #3730a3; }
+  .badge-lagging { background: #f1f5f9; color: #475569; }
+
+  .pill {
+    display: inline-block;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    font-size: 6.8pt;
+    white-space: nowrap;
+  }
+  .pill-green { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+  .pill-yellow { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+  .pill-red { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+  /* Phụ lục MH Code box */
+  .mh-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .mh-card {
+    background: #0f172a;
+    color: #f8fafc;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 6.8pt;
+    line-height: 1.35;
+    border: 1px solid #334155;
+  }
+
+  .mh-title {
+    color: #38bdf8;
+    font-weight: 700;
+    font-size: 7.2pt;
+    margin-bottom: 5px;
+    border-bottom: 1px dashed #334155;
+    padding-bottom: 3px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .mh-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+  }
+  .mh-highlight {
+    color: #4ade80;
+    font-weight: 700;
+    border-top: 1px solid #475569;
+    padding-top: 3px;
+    margin-top: 3px;
+  }
+
+  /* Decision Rules */
+  .rule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .rule-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #3b82f6;
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 7.3pt;
+    line-height: 1.3;
+  }
+
+  .rule-item.stop {
+    border-left-color: #ef4444;
+    background: #fff5f5;
+  }
+
+  .rule-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  .rule-tag-stop {
+    background: #ef4444;
+    color: white;
+    font-size: 6pt;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .rule-tag-action {
+    background: #3b82f6;
+    color: white;
+    font-size: 6pt;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .rule-kw {
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  /* Gates Table */
+  table.gate-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7.2pt;
+    margin-bottom: 8px;
+  }
+
+  table.gate-table th {
+    background: #1e293b;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 5px 6px;
+    border: 1px solid #334155;
+    font-size: 6.8pt;
+    text-transform: uppercase;
+  }
+
+  table.gate-table td {
+    padding: 5px 6px;
+    border: 1px solid #e2e8f0;
+    vertical-align: middle;
+  }
+
+  .decision-go {
+    display: inline-block;
+    background: #10b981;
+    color: #ffffff;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 6.8pt;
+  }
+
+  /* Kill & Gaps Alert */
+  .alert-kill {
+    background: #fef2f2;
+    border: 1.5px solid #f87171;
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 7.4pt;
+    color: #991b1b;
+    margin-bottom: 8px;
+  }
+
+  .alert-kill strong {
+    color: #dc2626;
+  }
+
+  .gap-box {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 7.2pt;
+    color: #334155;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 6px;
+    margin-top: 8px;
+    font-size: 6.8pt;
+    color: #94a3b8;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-container">
+
+  <!-- PAGE 1: STRATEGY, METRICS MATRIX, OPERATING LIGHTS -->
+  <div class="header">
+    <div class="header-left">
+      <div class="badge-tag">AI Product Handbook · Track 1 · Day 26</div>
+      <div class="header-title">OPERATING DASHBOARD: CODEREVIEW AI</div>
+      <div class="header-subtitle">AI-Powered Code Review Assistant · Enterprise & SMB Engineering Efficiency Engine</div>
+    </div>
+    <div class="header-meta">
+      <div>Học viên: <strong>Trần Dương Tuấn</strong></div>
+      <div>Mã HV: <strong>2A202601271</strong></div>
+      <div>Mô hình: <strong>B2B / DevTools SaaS</strong></div>
+      <div>Pricing: <strong>$12/seat + $0.50/PR</strong></div>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY BAR -->
+  <div class="kpi-bar">
+    <div class="kpi-card indigo">
+      <div class="kpi-label">Price Proposed</div>
+      <div class="kpi-val">$12.00</div>
+      <div class="kpi-sub">Floor: $9.72 (3x Cost)</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Cost / Job AI</div>
+      <div class="kpi-val">$3.24</div>
+      <div class="kpi-sub">Target &le; $3.50</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Gross Margin</div>
+      <div class="kpi-val">73.0%</div>
+      <div class="kpi-sub">Target &ge; 60%</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">Containment</div>
+      <div class="kpi-val">76.0%</div>
+      <div class="kpi-sub">Buffer: +16% pts</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-label">CAC Payback</div>
+      <div class="kpi-val">4.2 mos</div>
+      <div class="kpi-sub">Target &le; 5.0 mos</div>
+    </div>
+    <div class="kpi-card indigo">
+      <div class="kpi-label">Current MRR</div>
+      <div class="kpi-val">$1,440</div>
+      <div class="kpi-sub">Target &ge; $1,800</div>
+    </div>
+  </div>
+
+  <!-- DIAGNOSIS & NORTH STAR -->
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">1</span>
+        Chẩn Đoán Mô Hình Kinh Doanh (B2B)
+      </div>
+      <div class="card-content">
+        Chúng tôi là <strong>B2B SaaS DevTool</strong> vì nguồn tiền đến từ <strong>ngân sách kỹ thuật/DevTools</strong> của các công ty công nghệ (SMB/Mid-market quy mô 50–500 kỹ sư) theo gói $12/seat/tháng. Người dùng thật là <strong>Software Engineers, Tech Leads & Reviewers</strong>; bề mặt tiếp xúc trực tiếp là <strong>GitHub App (PR Bot)</strong> và Web Management Console.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">★</span>
+        North Star Metric & Giá Trị Cốt Lõi
+      </div>
+      <div class="card-content">
+        <strong>Weekly Active Reviewed PRs (WARP)</strong> — Số lượng Pull Requests được AI phân tích có ít nhất 1 gợi ý sửa lỗi/code smell được kỹ sư chấp thuận mỗi tuần / Active Team.
+        <div class="highlight-box">
+          <strong>Vì sao chọn:</strong> Khi WARP tăng, năng suất review thực tế tăng từ 8-15 PRs/tuần, trực tiếp chứng minh ROI tiết kiệm thời gian cho VP Eng và bảo vệ retention D14.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRAFFIC LIGHT DASHBOARD TABLE -->
+  <div class="section-title">
+    <span>BẢNG ĐÈN ĐIỀU HÀNH — 8 CHỈ SỐ QUẢN TRỊ CỐT LÕI</span>
+    <span class="section-tag">Cấu trúc: 3 Leading | 2 Operating | 3 Lagging | &ge;1 AI Cost Metric</span>
+  </div>
+
+  <table class="dashboard-table">
+    <thead>
+      <tr>
+        <th style="width: 5%; text-align: center;">ID</th>
+        <th style="width: 21%;">Metric & Định Nghĩa</th>
+        <th style="width: 17%;">Công Thức</th>
+        <th style="width: 5%;">Nhịp</th>
+        <th style="width: 7%; text-align: center;">Hiện Tại</th>
+        <th style="width: 7%; text-align: center;">🟢 Xanh</th>
+        <th style="width: 8%; text-align: center;">🟡 Vàng</th>
+        <th style="width: 7%; text-align: center;">🔴 Đỏ</th>
+        <th style="width: 14%;">Nguồn Đối Soát</th>
+        <th style="width: 9%;">Dự Báo Cho</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="cell-id"><span class="badge-id badge-leading">L-01</span></td>
+        <td><strong>PR Review Acceptance</strong><br><span style="color:#64748b;">% gợi ý code review được dev merge</span></td>
+        <td><code>Accepts / Tổng PR review</code></td>
+        <td>Tuần</td>
+        <td style="text-align: center;"><span class="pill pill-yellow">68%</span></td>
+        <td style="text-align: center;"><span class="pill pill-green">&ge; 70%</span></td>
+        <td style="text-align: center;"><span class="pill pill-yellow">55%–69%</span></td>
+        <td style="text-align: center;"><span class="pill pill-red">&lt; 55%</span></td>
+        <td>[BM] Lenny's DevTool (2024-04-15)</td>
+        <td><strong>Retention D14</strong> [R-01]</td>
+      </tr>
+      <tr>
+        <td class="cell-id"><span class="badge-id badge-leading">L-02</span></td>
+        <td><strong>D14 Team Retention</strong><br><span style="color:#64748b;">% team dev còn active sau 2 tuần</span></td>
+        <td><code>Active repos D14 / Repos D0</code></td>
+        <td>Tuần</td>
+        <td style="text-align: center;"><span class="pill pill-yellow">42%</span></td>
+        <td style="text-align: center;"><span class="pill pill-green">&ge; 45%</span></td>
+        <td style="text-align: center;"><span class="pill pill-yellow">30%–44%</span></td>
+        <td style="text-align: center;"><span class="pill pill-red">&lt; 30%</span></td>
+        <td>[BM] OpenView PLG (2024-03-20)</td>
+        <td><strong>LTV & Payback</strong> [R-02]</td>
+      </tr>
+      <tr>
+        <td class="cell-id"><span class="badge-id badge-leading">L-03</span></td>
+        <td><strong>Cost/Job AI (Chi phí AI)</strong><br><span style="color:#64748b;">LLM + Compute + Retry / Job</span></td>
+        <td><code>$1.230 chi phí / 380 PRs</code></td>
+        <td>Tuần</td>
+        <td style="text-align: center;"><span class="pill pill-green">$3.24</span></td>
+        <td style="text-align: center;"><span class="pill pill-green">&le; $3.50</span></td>
+        <td style="text-align: center;"><span class="pill pill-yellow">$3.51–$4.80</span></td>
+        <td style="text-align: center;"><span class="pill pill-red">&gt; $4.80</span></td>
+        <td>[MH] Phép tính Unit Economics [MH] 1</td>
+        <td><strong>Gross Margin</strong> [R-03]</td>
+      </tr>
+      <tr>
+        <td class="cell-id"><span class="badge-id badge-operating">O-01</span></td>
+        <td><strong>Success / Containment</strong><br><span style="color:#64748b;">% PR phân tích thành công trọn vẹn</span></td>
+        <td><code>Completed (380) / Attempt (500)</code></td>
+        <td>Tuần</td>
+        <td style="text-align: center;"><span class="pill pill-green">76%</span></td>
+        <td style="text-align: center;"><span class="pill pill-green">&ge; 75%</span></td>
+        <td style="text-align: center;"><span class="pill pill-yellow">60%–74%</span></td>
+        <td style="text-align: center;"><span class="pill pill-red">&lt; 60%</span></td>
+        <td>[TB] Thử nghiệm 500 PRs (2026-08)</td>
+        <td><strong>Cost/Job L-03</strong> [R-04]</td>
+      </tr>
+      <tr>
+        <td class="cell-id"><span class="badge-id badge-operating">O-02</span></td>
+        <td><strong>Turnaround Time P95</strong><br><span style="color:#64748b;">Thời gian từ mở PR đến khi bot comment</span></td>
+        <td><code>P95 Webhook latency (phút)</code></td>
+        <td>Tuần</td>
+        <td style="text-align: center;"><span class="pill pill-green">3.2m</span></td>
+        <td style="text-align: center;"><span class="pill pill-green">&le; 4.0m</span></td>
+        <td style="text-align: center;"><span class="pill pill-yellow">4.1m–7.0m</span></td>
+        <td style="text-align: center;"><span class="pill pill-red">&gt; 7.0m</span></td>
+        <td>[TB] Log Webhook APM (2026-08)</td>
+        <td><strong>Adoption O-01</strong> [R-05]</td>
+      </tr>
+      <tr>
+        <td class="cell-id"><span class="badge-id badge-lagging">G-01</span></td>
+        <td><strong>Gross Margin %</strong><br><span style="color:#64748b;">Biên lợi nhuận gộp toàn bộ dịch vụ</span></td>
+        <td><code>($12.00 − $3.24) / $12.00</code></td>
+        <td>Tháng</td>
+        <td style="text-align: center;"><span class="pill pill-green">73%</span></td>
+        <td style="text-align: center;"><span class="pill pill-green">&ge; 70%</span></td>
+        <td style="text-align: center;"><span class="pill pill-yellow">60%–69%</span></td>
+        <td style="text-align: center;"><span class="pill pill-red">&lt; 60%</span></td>
+        <td>[MH] Phép tính Gross Margin [MH] 1</td>
+        <td><strong>Unit Profit</strong> [—]</td>
+      </tr>
+      <tr>
+        <td class="cell-id"><span class="badge-id badge-lagging">G-02</span></td>
+        <td><strong>CAC Payback Period</strong><br><span style="color:#64748b;">Thời gian hoàn vốn chi phí bán hàng SMB</span></td>
+        <td><code>CAC $1.053 / (ARPU &times; GM%)</code></td>
+        <td>Tháng</td>
+        <td style="text-align: center;"><span class="pill pill-green">4.2 th</span></td>
+        <td style="text-align: center;"><span class="pill pill-green">&le; 5.0 th</span></td>
+        <td style="text-align: center;"><span class="pill pill-yellow">5.1–8.0 th</span></td>
+        <td style="text-align: center;"><span class="pill pill-red">&gt; 8.0 th</span></td>
+        <td>[MH] Phép tính Payback [MH] 2</td>
+        <td><strong>Cash Flow</strong> [—]</td>
+      </tr>
+      <tr>
+        <td class="cell-id"><span class="badge-id badge-lagging">G-03</span></td>
+        <td><strong>Monthly Recurring Rev (MRR)</strong><br><span style="color:#64748b;">Doanh thu định kỳ từ Seat + Overage</span></td>
+        <td><code>(Seats &times; $12) + (PRs &times; $0.5)</code></td>
+        <td>Tháng</td>
+        <td style="text-align: center;"><span class="pill pill-yellow">$1,440</span></td>
+        <td style="text-align: center;"><span class="pill pill-green">&ge; $1,800</span></td>
+        <td style="text-align: center;"><span class="pill pill-yellow">$1,200–$1,799</span></td>
+        <td style="text-align: center;"><span class="pill pill-red">&lt; $1,200</span></td>
+        <td>[BM] OpenView DevTools Seed (2024)</td>
+        <td><strong>Scale Metric</strong> [—]</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGE BREAK / CONTINUATION -->
+  <div class="page-break"></div>
+
+  <!-- HEADER COMPACT PAGE 2 -->
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid #0f172a; padding-bottom: 4px; margin-bottom: 8px;">
+    <div style="font-size: 10.5pt; font-weight: 800; color: #0f172a; text-transform: uppercase;">
+      HỆ THỐNG TÍNH TOÁN KINH TẾ [MH], LUẬT QUYẾT ĐỊNH & CỔNG GÁC 90 NGÀY
+    </div>
+    <div style="font-size: 7.5pt; color: #64748b; font-weight: 600;">CodeReview AI · Trang 2/2</div>
+  </div>
+
+  <!-- PHỤ LỤC MH -->
+  <div class="section-title">
+    <span>PHỤ LỤC [MH] — MÔ HÌNH HÓA ĐỊNH LƯỢNG UNIT ECONOMICS</span>
+    <span class="section-tag">Truy xuất trực tiếp từ Excel GTM Model & Breakeven Analysis</span>
+  </div>
+
+  <div class="mh-grid">
+    <div class="mh-card">
+      <div class="mh-title">[MH] 1 — Ngưỡng Đỏ Cost/Job & Điểm Hòa Vốn Containment</div>
+      <div class="mh-line"><span>Giá gói cơ sở đề xuất (Price):</span><span>$12.00 / seat / tháng</span></div>
+      <div class="mh-line"><span>Gross Margin mục tiêu tối thiểu:</span><span>60.0%</span></div>
+      <div class="mh-line"><span>Chi phí biến đổi tối đa cho phép:</span><span>$12.00 &times; (1 - 0.60) = $4.80</span></div>
+      <div class="mh-line"><span>- API LLM (Claude 3.5 Sonnet):</span><span>$800 / 380 = $2.11 / job</span></div>
+      <div class="mh-line"><span>- AWS Infra (2x t4g.medium + S3):</span><span>$200 / 380 = $0.53 / job</span></div>
+      <div class="mh-line"><span>- Retry buffer (10%) + DevOps:</span><span>($80 + $150) / 380 = $0.60 / job</span></div>
+      <div class="mh-line mh-highlight"><span>&rarr; Cost/Job thực tế hiện tại:</span><span>$1.230 / 380 = $3.24 (GM = 73%)</span></div>
+      <div class="mh-line mh-highlight"><span>&rarr; Ngưỡng đỏ L-03:</span><span>$4.80 / job | Breakeven Rate: 60.0%</span></div>
+    </div>
+
+    <div class="mh-card">
+      <div class="mh-title">[MH] 2 — Ngưỡng Hoàn Vốn CAC & Giới Hạn Churn Cho Phép</div>
+      <div class="mh-line"><span>CAC trung bình 1 team SMB (PLG):</span><span>$1.053 / team chuyển đổi</span></div>
+      <div class="mh-line"><span>Quy mô team trung bình:</span><span>25 seats / team</span></div>
+      <div class="mh-line"><span>Doanh thu ARPU của 1 team:</span><span>(25 &times; $12) + (100 &times; $0.5) = $350.00/th</span></div>
+      <div class="mh-line"><span>Lợi nhuận gộp ròng hàng tháng:</span><span>$350.00 &times; 73% = $255.50 / tháng</span></div>
+      <div class="mh-line mh-highlight"><span>&rarr; Thời gian CAC Payback thực tế:</span><span>$1.053 / $255.50 = 4.12 tháng</span></div>
+      <div class="mh-line mh-highlight"><span>&rarr; Ngưỡng đỏ Payback (G-02):</span><span>8.0 tháng (Max Churn &le; 12.5%/th)</span></div>
+      <div class="mh-line" style="color: #94a3b8; font-size: 6.2pt; margin-top: 2px;"><span>* D14 Team Retention tối thiểu để bảo toàn vốn = 30.0% (ngưỡng đỏ L-02)</span></div>
+    </div>
+  </div>
+
+  <!-- DECISION ENGINE RULES -->
+  <div class="section-title">
+    <span>HỆ THỐNG LUẬT QUYẾT ĐỊNH (DECISION ENGINE) — ĐỦ 5 THÀNH PHẦN</span>
+    <span class="section-tag">Nguyên tắc: Động từ hành động · 3 Luật Dừng (STOP) · Cấm từ ngữ trì hoãn</span>
+  </div>
+
+  <div class="rule-list">
+    <div class="rule-item stop">
+      <div class="rule-header">
+        <span class="rule-tag-stop">LUẬT DỪNG</span>
+        <strong>R-01 (Đóng băng mở rộng team mới khi chất lượng review giảm)</strong>
+      </div>
+      <div>
+        <span class="rule-kw">NẾU</span> L-01 (PR Acceptance Rate) &lt; 55% <span class="rule-kw">TRONG</span> 2 tuần liên tiếp <span class="rule-kw">VÀ</span> tổng PRs review &ge; 200 PRs <span class="rule-kw">THÌ</span> <strong>đóng băng việc mở rộng sang các repo/team mới</strong> và chuyển 100% kỹ sư sang tối ưu lại prompt AST filtering giảm 50% false positives <span class="rule-kw">KHÔNG THÌ</span> <strong>cấm đẩy tính năng tự động comment code ra production</strong>.
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-header">
+        <span class="rule-tag-action">HÀNH ĐỘNG</span>
+        <strong>R-02 (Kích hoạt phỏng vấn sâu khi retention sụt giảm)</strong>
+      </div>
+      <div>
+        <span class="rule-kw">NẾU</span> L-02 (D14 Team Retention) &lt; 30% <span class="rule-kw">TRONG</span> 3 tuần liên tiếp <span class="rule-kw">VÀ</span> số repo kích hoạt &ge; 15 repos <span class="rule-kw">THÌ</span> <strong>kích hoạt quy trình 1-on-1 exit interview</strong> trực tiếp với Tech Lead/Reviewer để xác định lý do tắt bot và điều chỉnh độ nhạy rule-set <span class="rule-kw">KHÔNG THÌ</span> <strong>cấm gửi email marketing tự động thúc ép nâng cấp gói trả phí</strong>.
+      </div>
+    </div>
+
+    <div class="rule-item stop">
+      <div class="rule-header">
+        <span class="rule-tag-stop">LUẬT DỪNG</span>
+        <strong>R-03 (Cắt giảm context & định tuyến model rẻ khi vượt trần chi phí)</strong>
+      </div>
+      <div>
+        <span class="rule-kw">NẾU</span> L-03 (Cost/Job AI) &gt; $4.80/job <span class="rule-kw">TRONG</span> 1 tuần <span class="rule-kw">VÀ</span> số PR xử lý &ge; 100 PRs <span class="rule-kw">THÌ</span> <strong>giới hạn độ dài context tối đa 800 dòng diff code</strong> và tự động định tuyến các PR dưới 50 dòng sang Claude 3.5 Haiku thay vì Sonnet <span class="rule-kw">KHÔNG THÌ</span> <strong>cấm bù lỗ hạ tầng bằng cách tăng giá gói seat đột ngột</strong>.
+      </div>
+    </div>
+
+    <div class="rule-item stop">
+      <div class="rule-header">
+        <span class="rule-tag-stop">LUẬT DỪNG</span>
+        <strong>R-04 (Fallback Static Analysis khi tỷ lệ containment giảm)</strong>
+      </div>
+      <div>
+        <span class="rule-kw">NẾU</span> O-01 (Success / Containment Rate) &lt; 60% <span class="rule-kw">TRONG</span> 1 tuần <span class="rule-kw">VÀ</span> tổng PR attempts &ge; 100 PRs <span class="rule-kw">THÌ</span> <strong>chuyển hướng tự động fallback sang static analysis (linter)</strong> cho các file diff quá lớn (&gt; 2.000 dòng) và kích hoạt alert khẩn cấp cho DevOps <span class="rule-kw">KHÔNG THÌ</span> <strong>cấm tăng giới hạn kích thước PR tiếp nhận</strong>.
+      </div>
+    </div>
+
+    <div class="rule-item">
+      <div class="rule-header">
+        <span class="rule-tag-action">HÀNH ĐỘNG</span>
+        <strong>R-05 (Autoscale hạ tầng Worker & Queue khi nghẽn Webhook)</strong>
+      </div>
+      <div>
+        <span class="rule-kw">NẾU</span> O-02 (Turnaround Time P95) &gt; 7.0 phút <span class="rule-kw">TRONG</span> 3 ngày liên tiếp <span class="rule-kw">VÀ</span> concurrent PRs &ge; 20 jobs <span class="rule-kw">THÌ</span> <strong>kích hoạt auto-scaling mở rộng cụm worker parser</strong> song song trên AWS ECS Fargate và tối ưu hóa hàng đợi Redis <span class="rule-kw">KHÔNG THÌ</span> <strong>cấm bổ sung các model phân tích bảo mật chuyên sâu nặng nề vào luồng review tức thì</strong>.
+      </div>
+    </div>
+  </div>
+
+  <!-- 90-DAY STAGE GATES & KILL CRITERIA -->
+  <div class="section-title">
+    <span>CỔNG GÁC 90 NGÀY (STAGE GATES) & TIÊU CHÍ DỪNG DỰ ÁN (KILL CRITERIA)</span>
+    <span class="section-tag">Bằng chứng vật lý · Quyết định định lượng</span>
+  </div>
+
+  <table class="gate-table">
+    <thead>
+      <tr>
+        <th style="width: 12%;">Cổng Gác</th>
+        <th style="width: 32%;">Metric & Ngưỡng Định Lượng (Số)</th>
+        <th style="width: 44%;">Bằng Chứng Vật Lý Đối Soát</th>
+        <th style="width: 12%; text-align: center;">Quyết Định</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Ngày 30</strong> (Pilot Stage)</td>
+        <td>&ge; 3 pilot teams hoàn tất &ge; 500 PRs <strong>VÀ</strong> Containment Rate &ge; 70%</td>
+        <td>Báo cáo Pilot Evaluation Report + GitHub App Telemetry Log CSV</td>
+        <td style="text-align: center;"><span class="decision-go">GO</span></td>
+      </tr>
+      <tr>
+        <td><strong>Ngày 60</strong> (Product Stage)</td>
+        <td>&ge; 10 paying customer teams ($1.2K MRR) <strong>VÀ</strong> Cost/Job &le; $3.50</td>
+        <td>Stripe Billing Analytics Dashboard + AWS Cost Explorer Invoice Export</td>
+        <td style="text-align: center;"><span class="decision-go">GO</span></td>
+      </tr>
+      <tr>
+        <td><strong>Ngày 90</strong> (Scale Stage)</td>
+        <td>MRR &ge; $1,800 <strong>VÀ</strong> CAC Payback &le; 5.0 tháng <strong>VÀ</strong> Gross Margin &ge; 70%</td>
+        <td>Báo cáo tài chính P&L quản trị nội bộ + HubSpot CRM Attribution Export</td>
+        <td style="text-align: center;"><span class="decision-go">GO</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="alert-kill">
+    <strong>TIÊU CHÍ DỪNG DỰ ÁN (KILL CRITERIA):</strong> KILL dự án nếu <strong>CAC Payback Period vẫn &gt; 8.0 tháng</strong> hoặc <strong>MRR vẫn &lt; $1,200</strong> sau mốc <strong>Ngày 90</strong> dù đã thực hiện 1 lần FIX prompt AST filtering và tái cấu trúc hybrid pricing ở Ngày 60.
+  </div>
+
+  <div class="gap-box">
+    <strong style="color: #0f172a;">KHOẢNG TRỐNG DỮ LIỆU ĐANG ĐO (DATA GAPS):</strong><br>
+    1. <strong>Tỷ lệ phát hiện lỗi bảo mật nghiêm trọng (CVE Detection Rate):</strong> Chạy benchmark tự động 1.000 lỗ hổng đã biết trên repo đối chuẩn Semgrep/Snyk — <em>Ngày dự kiến có số: 2026-09-30</em>.<br>
+    2. <strong>Tỷ lệ chuyển đổi tự nhiên qua GitHub Marketplace:</strong> Cài đặt funnel tracking Mixpanel gắn GitHub Org ID — <em>Ngày dự kiến có số: 2026-09-15</em>.
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>AI Product Handbook · Day 26: Operating Dashboard · CodeReview AI</div>
+    <div>Học viên: <strong>Trần Dương Tuấn</strong> (Mã HV: <strong>2A202601271</strong>) | Model: Claude 3.5 Sonnet</div>
+    <div>Trang 2 / 2</div>
+  </div>
+
+</div>
+
+</body>
+</html>
